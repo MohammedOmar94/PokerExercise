@@ -45,7 +45,7 @@ function checkHand (firstHand, secondHand) {
   var pokerHand = new PokerHand(firstHand)
   if (validateHand(firstHand) && validateHand(secondHand)) {
     var decision = pokerHand.compareWith(secondHand)
-    alert("return value in check hand is " + JSON.stringify( pokerHand.compareWith(secondHand)))
+    // alert("return value in check hand is " + JSON.stringify( pokerHand.compareWith(secondHand)))
     var firstHandDecision = decision[0];
     var secondHandDecision = decision[1];
     var result = decision[2];
@@ -90,8 +90,8 @@ function validateHand (hand) {
 
         if (validCardsCount == 5 && validSuitCount == 5) {
           isValidated = true
-        // On the last loop, show the error message in the case when at least one character is not valid.
         } else if (i == pairOfCards.length - 1) {
+          // On the last loop, show the error message for the case when at least one character is not valid.
           sweetAlert('Oops...', "One or more of your cards doesn't exist. Please ensure the combination is possible first", 'warning')
           isValidated = false
         }
@@ -155,13 +155,13 @@ function highCardResult (result) {
   var secondHandAsInt = denomToInteger(highCardValue[1])
   if (firstHandAsInt > secondHandAsInt) {
     result = 1
-    alert('The first hand is stronger with ' + firstHandAsInt + ' than ' + secondHandAsInt)
+    // alert('The first hand is stronger with ' + firstHandAsInt + ' than ' + secondHandAsInt)
   } else if (firstHandAsInt < secondHandAsInt) {
     result = 2
-    alert('The second hand is stronger with ' + secondHandAsInt + ' than ' + firstHandAsInt)
+    // alert('The second hand is stronger with ' + secondHandAsInt + ' than ' + firstHandAsInt)
   } else if (firstHandAsInt == secondHandAsInt) {
     result = 3
-    alert('The first hand and second hand are equal with ' + firstHandAsInt + ' and ' + secondHandAsInt)
+    // alert('The first hand and second hand are equal with ' + firstHandAsInt + ' and ' + secondHandAsInt)
   }
   return result
 }
@@ -309,34 +309,34 @@ function determineHand (cardsObject) {
   // Checks if the 5 highest denominations are present, and that they're of the same suit (e.g. Ts Js Qs Ks As)
   var royalFlush = highestHand.length == 5 && suitFlush.length == 1
 
-  alert('denomination is ' + JSON.stringify(denominationAppearanceCount))
+  // alert('denomination is ' + JSON.stringify(denominationAppearanceCount))
   var sequenceCount = sequenceCheck(denominationAppearanceCount)
   // That one result should be that single suit.
   var inSameSuit = suitFlush.length === 1
   // flushDecision(sequenceCount, inSameSuit, royalFlush)
-  alert('denomination in sequence is ' + JSON.stringify(sequenceCount))
+  // alert('denomination in sequence is ' + JSON.stringify(sequenceCount))
 
   if (sequenceCount == 4) {
     if (inSameSuit) {
       if (royalFlush) {
         // Royal Flush (e.g. Ts Js Qs Ks As)
         handDecision = 'Royal Flush'
-        alert('The result is a Royal flush ' + JSON.stringify(highestHand) + '<br/>' + JSON.stringify(suitFlush))
+        // alert('The result is a Royal flush ' + JSON.stringify(highestHand) + '<br/>' + JSON.stringify(suitFlush))
       } else {
         // Straight Flush (e.g. 2s 3s 4s 5s 6s)
         handDecision = 'Straight Flush'
-        alert('The result is a Straight Flush ')
+        // alert('The result is a Straight Flush ')
       }
     } else {
       // Straight (e.g. 2s 3d 4h 5c 6d)
       handDecision = 'Straight'
-      alert('The result is a Straight!')
+      // alert('The result is a Straight!')
     }
   } else {
     // Flush (e.g. Ks 5s 9s 2s 3s)
     if (inSameSuit) {
       handDecision = 'Flush'
-      alert('The result is a Flush with ' + suitFlush[0].name)
+      // alert('The result is a Flush with ' + suitFlush[0].name)
     } else {
       // Returns denominations that have only appeared once, but in reverse order so highest card starts first.
       if (denomEquals1.length != 0 && !inSameSuit && !threeOfAKind && !twoPairs && !pair) {
@@ -351,22 +351,22 @@ function determineHand (cardsObject) {
 
   if (fourOfAKind != null && fourOfAKind.length != 0) {
     handDecision = 'Four of a Kind'
-    alert('The result is a Four Of a Kind with ' + fourOfAKind[0].name)
+    // alert('The result is a Four Of a Kind with ' + fourOfAKind[0].name)
   } else if (fullHouse != null && fullHouse) {
     handDecision = 'Full House'
-    alert('The result is a Full House with ' + denomEquals3[0].name + ' and ' + denomEquals2[0].name)
+    // alert('The result is a Full House with ' + denomEquals3[0].name + ' and ' + denomEquals2[0].name)
   } else if (threeOfAKind != null && threeOfAKind) {
     handDecision = 'Three of a Kind'
-    alert('The result is a threeOfAKind with ' + denomEquals3[0].name + ' and ' + denomEquals1[0].name + ' and ' + denomEquals1[1].name)
+    // alert('The result is a threeOfAKind with ' + denomEquals3[0].name + ' and ' + denomEquals1[0].name + ' and ' + denomEquals1[1].name)
   } else if (twoPairs != null && twoPairs) {
     handDecision = 'Two Pairs'
-    alert('The result is a Two Pairs with ' + denomEquals2[0].name + ' and ' + denomEquals2[1].name)
+    // alert('The result is a Two Pairs with ' + denomEquals2[0].name + ' and ' + denomEquals2[1].name)
   } else if (pair != null && pair) {
     handDecision = 'Pair'
-    alert('The result is a Pair with ' + denomEquals2[0].name)
+    // alert('The result is a Pair with ' + denomEquals2[0].name)
   } else if (highCard != null && highCard) {
     handDecision = 'High Card'
-    alert('The result is a High Card with ' + reverseDenom[0].name)
+    // alert('The result is a High Card with ' + reverseDenom[0].name)
   }
   return handDecision
 }
