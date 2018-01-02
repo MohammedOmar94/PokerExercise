@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>      
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
+        <title>Poker Exercise</title>
+
+        <!-- CSS  -->
+        <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"><!--Import Google Icon Font-->  
+        <link href="src/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link href="src/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+        <link rel="stylesheet" type="text/css" href="src/css/sweetalert.css">
+    </head>
+    <body>  
+        <div class="navbar-fixed">
+            <nav class="nav-extended grey lighten-4">
+                <div class="nav-wrapper container">
+                    <a href="index.html" class="brand-logo">Poker Exercise</a>
+                </div>
+            </nav>
+        </div>
+        <div class="container">
+        </div>  
+        <div id="Create" class="section scrollspy">
+            <div class="row container">
+                <h3 class="header">Poker hands</h3>
+                <div class="row">
+                    <form class="col s12">
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input id="firstHand" type="text" class="validate" maxlength="14">
+                                <label for="firstHand">First Hand</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input id="secondHand" type="text" class="validate" maxlength="14">
+                                <label for="secondHand">Second Hand</label>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="col s6">
+                        <a id="check_button" class="waves-effect waves-light btn">Check</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <main></main>
+        <!--Import jQuery before materialize.js-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/jquery-migrate-git.min.js"></script>  
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script><!-- Compiled and minified JavaScript -->
+        <script src="src/js/sweetalert.min.js" type="text/javascript"></script> 
+        <script src="src/js/pokerManager.js" type="text/javascript"></script>      
+        <script>
+            $(document).ready(function () {
+            });
+
+            $("#check_button").click(function () {
+                // With this, won't have to worry about the case the user types in.
+                var firstHand = $("#firstHand").val().toUpperCase();
+                var secondHand = $("#secondHand").val().toUpperCase();
+                if (firstHand === '' || secondHand === '') {
+                    sweetAlert("Oops...", "All fields must be filled in!", "info");
+                } else {
+                    checkHand(firstHand, secondHand);
+                }
+            });
+        </script>
+    </body>        
+
+</html>
