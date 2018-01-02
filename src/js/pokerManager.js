@@ -8,8 +8,7 @@
 // Three of a Kind: 2s 2h 2d 4sc 6s
 // Two Pairs: 2s 2h 4d 4c 6s
 // Pair: 2s 2h 5d 4c 6s
-// Pair: 2s 8h 5d 4c 6s
-
+// High Card: 2s 8h 5d 4c 6s
 
 // Stores high card values in array, temp solution until everything is fully tested
 var highCardValue = []
@@ -20,30 +19,24 @@ function PokerHand (hand) {
 
 PokerHand.prototype.compareWith = function (secondHand) {
   var result = 0
+  // What we will be sending back to display the results to the user.
+  var decision ;
   var firstHandDecision = WinAndSplit(this.hand)
   var secondHandDecision = WinAndSplit(secondHand)
   if (firstHandDecision != null && secondHandDecision != null) {
     if (highCardValue.length == 2) {
-      result = highCardResult()
+      result = highCardResult(result)
       highCardValue.length = 0
-      return result
+      decision = [firstHandDecision, secondHandDecision, result]
+      return decision
     } else {
+      result = winningHandResult(firstHandDecision, secondHandDecision, result)
       if (highCardValue.length == 1) {
         // Clear array if there is only a single high card
         highCardValue.length = 0
       }
-      var firstHandAsInt = handToInteger(firstHandDecision)
-      var secondHandAsInt = handToInteger(secondHandDecision)
-      if (firstHandAsInt > secondHandAsInt) {
-        result = 1
-        alert('The first hand is stronger with ' + firstHandDecision + ' than ' + secondHandDecision)
-      } else if (firstHandAsInt < secondHandAsInt) {
-        result = 2
-        alert('The second hand is stronger with ' + secondHandDecision + ' than ' + firstHandDecision)
-      } else if (firstHandAsInt == secondHandAsInt) {
-        result = 3
-        alert('The first hand and second hand are equal with ' + firstHandDecision + ' and ' + secondHandDecision)
-      }
+      decision = [firstHandDecision, secondHandDecision, result]
+      return decision
     }
   }
 }
@@ -51,7 +44,18 @@ PokerHand.prototype.compareWith = function (secondHand) {
 function checkHand (firstHand, secondHand) {
   var pokerHand = new PokerHand(firstHand)
   if (validateHand(firstHand) && validateHand(secondHand)) {
-    pokerHand.compareWith(secondHand)
+    var decision = pokerHand.compareWith(secondHand)
+    alert("return value in check hand is " + JSON.stringify( pokerHand.compareWith(secondHand)))
+    var firstHandDecision = decision[0];
+    var secondHandDecision = decision[1];
+    var result = decision[2];
+    if (result == 1) {
+      sweetAlert('First Hand wins', "The first hand's " + firstHandDecision + " is stronger than the second hand's " + secondHandDecision, 'success')
+    } else if (result == 2) {
+      sweetAlert('First Hand loses', "The second hand's " + secondHandDecision + " is stronger than the first hand's " + firstHandDecision, 'error')
+    } else if (result == 3) {
+      sweetAlert('Draw!', 'The first hand and second hand are equal with ' + firstHandDecision + ' and ' + secondHandDecision, 'info')
+    }
   }
 }
 
@@ -75,16 +79,16 @@ function validateHand (hand) {
           isValidated = true
         // On the last loop, show the error message
         } else if (i == pairOfCards.length - 1) {
-          sweetAlert('Oops...', "One or more of your cards doesn't exist. Please ensure the combination is possible first", 'error')
+          sweetAlert('Oops...', "One or more of your cards doesn't exist. Please ensure the combination is possible first", 'warning')
           isValidated = false
         }
       }
     } else {
-      sweetAlert('Oops...', 'Please use two characters for each of the 5 cards entered (e.g. 2S, 8D, JH..) ', 'error')
+      sweetAlert('Oops...', 'Please use two characters for each of the 5 cards entered (e.g. 2S, 8D, JH..) ', 'warning')
       isValidated = false
     }
   } else {
-    sweetAlert('Oops...', 'Please enter 5 cards separated by a space', 'error')
+    sweetAlert('Oops...', 'Please enter 5 cards separated by a space', 'warning')
     isValidated = false
   }
   return isValidated
@@ -117,10 +121,23 @@ function countApperances (string, string2) {
   return occurances
 }
 
+// Compares both hands and determines whether the first hand has won or lost
+function winningHandResult (firstHandDecision, secondHandDecision, result) {
+  var firstHandAsInt = handToInteger(firstHandDecision)
+  var secondHandAsInt = handToInteger(secondHandDecision)
+  if (firstHandAsInt > secondHandAsInt) {
+    result = 1
+  } else if (firstHandAsInt < secondHandAsInt) {
+    result = 2
+  } else if (firstHandAsInt == secondHandAsInt) {
+    result = 3
+  }
+  return result;
+}
+
 // Determines which hand with a high card is the winner.
-function highCardResult () {
-  var result = 0
-  alert("high card values is " + highCardValue[0] + " " + highCardValue[1]);
+function highCardResult (result) {
+  alert('high card values is ' + highCardValue[0] + ' ' + highCardValue[1])
   var firstHandAsInt = denomToInteger(highCardValue[0])
   var secondHandAsInt = denomToInteger(highCardValue[1])
   if (firstHandAsInt > secondHandAsInt) {
@@ -172,7 +189,7 @@ function WinAndSplit (hand) {
     // Here we can determine the type of hand we now have, for an example let's try and find our Flush
 
   } else {
-    sweetAlert('Oops...', 'Please remove any duplicate cards', 'error')
+    sweetAlert('Oops...', 'Please remove any duplicate cards', 'warning')
   }
   return handDecision
 }
@@ -321,11 +338,11 @@ function determineHand (cardsObject) {
       alert('The result is a Flush with ' + suitFlush[0].name)
     } else {
       // Returns denominations that have only appeared once, but in reverse order so highest card starts first.
-      if (denomEquals1.length != 0  && !inSameSuit && !threeOfAKind && !twoPairs && !pair) {
+      if (denomEquals1.length != 0 && !inSameSuit && !threeOfAKind && !twoPairs && !pair) {
         // Needs a bit more work
         var reverseDenom = denomEquals1.reverse()
         // Take the first result which is the highest denomination
-        var highCard = reverseDenom[0].count == 1;
+        var highCard = reverseDenom[0].count == 1
         highCardValue.push(reverseDenom[0].name)
       }
     }
@@ -482,4 +499,3 @@ function getCardObject () {
 // Check if denom is a number then add to Array, re-order integers. Check if diff is 1 or -1, then you gots a sequence. //Store count of the number of denoms that are in a sequence
 // If denom is a symbol other than T or Ace(?), store integer count for that denom.
 // integer for counts of suits.
-
