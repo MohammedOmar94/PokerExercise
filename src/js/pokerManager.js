@@ -71,6 +71,12 @@ function validateHand (hand) {
       var validCardsCount = 0
       var validSuitCount = 0
       for (var i = 0; i < pairOfCards.length; i++) {
+        // Checks if any duplicates are present within the code.
+        if (countApperances(hand, pairOfCards[i]) > 1) {
+          duplicatesPresent = true
+          sweetAlert('Oops...', 'Please remove any duplicate cards', 'warning')
+          return false
+        }
         // Scenario where someone types in just 1 or 3 characters for a card (e.g. 2 SAH 6CD)
         if(pairOfCards[i].length > 2 || pairOfCards[i].length < 2){
           sweetAlert('Oops...', "Each card must be comprised of only 2 characters (e.g. 2S AH 6D)", 'warning')
@@ -163,15 +169,9 @@ function highCardResult (result) {
 function WinAndSplit (hand) {
   // Splits cards into pairs in the form of 2 characters. 
   var pairOfCards = hand.split(' ')
-  var duplicatesPresent = false
   var cardsObject = getCardObject()
   var handDecision
   for (var i = 0; i < pairOfCards.length; i++) {
-    //  
-    // if a card is duplicated in a hand, raise flag
-    if (countApperances(hand, pairOfCards[i]) > 1) {
-      duplicatesPresent = true
-    }
     // Gets the denomination for that individual character of that pair - pairOfCards[i][0]
     var getDenomination = cardsObject.cards.filter(function (obj) {
       return obj.name === pairOfCards[i][0]
@@ -190,14 +190,8 @@ function WinAndSplit (hand) {
     getSuit[0].count = count(hand, pairOfCards[i][1])
   }
 
-  // alert("DUPLICATE PRESENT " + duplicatesPresent)
-  if (!duplicatesPresent) {
-    handDecision = determineHand(cardsObject)
-    // Here we can determine the type of hand we now have, for an example let's try and find our Flush
-
-  } else {
-    sweetAlert('Oops...', 'Please remove any duplicate cards', 'warning')
-  }
+  handDecision = determineHand(cardsObject)
+  
   return handDecision
 }
 
