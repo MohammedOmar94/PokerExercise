@@ -71,13 +71,20 @@ function validateHand (hand) {
       var validCardsCount = 0
       var validSuitCount = 0
       for (var i = 0; i < pairOfCards.length; i++) {
+        // Scenario where someone types in just 1 or 3 characters for a card (e.g. 2 SAH 6CD)
+        if(pairOfCards[i].length > 2 || pairOfCards[i].length < 2){
+          sweetAlert('Oops...', "Each card must be comprised of only 2 characters (e.g. 2S AH 6D)", 'warning')
+          return false;
+        }
         // The final hurdle now is just to see if the user has entered in a valid value/suit.
         validCardsCount = validCardsCount + count('23456789TJQKA', pairOfCards[i][0].toString())
         validSuitCount = validSuitCount + count('SHDC', pairOfCards[i][1].toString())
         // Forces user to type the correct values in for each card
+
+
         if (validCardsCount == 5 && validSuitCount == 5) {
           isValidated = true
-        // On the last loop, show the error message
+        // On the last loop, show the error message in the case when at least one character is not valid.
         } else if (i == pairOfCards.length - 1) {
           sweetAlert('Oops...', "One or more of your cards doesn't exist. Please ensure the combination is possible first", 'warning')
           isValidated = false
