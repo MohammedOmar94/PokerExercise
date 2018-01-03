@@ -8,7 +8,7 @@ Firstly download the project (if you haven't already).
 
 Within the `root` folder, simply open up the `index.html` file and you're good to go! :)
 
-To view the unit tests, uncomment lines 64-65.
+To view the unit tests, uncomment lines 64-65 of `index.html`.
 
 ## How to use
 
