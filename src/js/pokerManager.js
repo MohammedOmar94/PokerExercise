@@ -5,7 +5,7 @@
 // Full House: 2s 2h 2d 6c 6s
 // Flush : 2s 4s 6s 8s Ts
 // Straight : 2s 3s 4c 5h 6d
-// Three of a Kind: 2s 2h 2d 4sc 6s
+// Three of a Kind: 2s 2h 2d 4c 6s
 // Two Pairs: 2s 2h 4d 4c 6s
 // Pair: 2s 2h 5d 4c 6s
 // High Card: 2s 8h 5d 4c 6s
@@ -19,22 +19,20 @@ function PokerHand (hand) {
 
 PokerHand.prototype.compareWith = function (secondHand) {
   var result = 0
-  // What we will be sending back to display the results to the user.
+  // Array that will contain the results to display to the user.
   var decision ;
-  var firstHandDecision = WinAndSplit(this.hand)
-  var secondHandDecision = WinAndSplit(secondHand)
+  highCardValue.length = 0;
+  var firstHandDecision = getHandDecision(this.hand)
+  var secondHandDecision = getHandDecision(secondHand)
   if (firstHandDecision != null && secondHandDecision != null) {
     if (highCardValue.length == 2) {
+      // If we're dealing with 2 high cards, we need to determine which high card is stronger first
       result = highCardResult(result)
       highCardValue.length = 0
       decision = [firstHandDecision, secondHandDecision, result]
       return decision
     } else {
       result = winningHandResult(firstHandDecision, secondHandDecision, result)
-      if (highCardValue.length == 1) {
-        // Clear array if there is only a single high card
-        highCardValue.length = 0
-      }
       decision = [firstHandDecision, secondHandDecision, result]
       return decision
     }
@@ -46,8 +44,10 @@ function checkHand (firstHand, secondHand) {
   if (validateHand(firstHand) && validateHand(secondHand)) {
     var decision = pokerHand.compareWith(secondHand)
     // alert("return value in check hand is " + JSON.stringify( pokerHand.compareWith(secondHand)))
+    // Strings containing the hand
     var firstHandDecision = decision[0];
     var secondHandDecision = decision[1];
+    // Integer containing the result (3, 2 or 1)
     var result = decision[2];
     if (result == 1) {
       sweetAlert('First Hand wins', "The first hand's " + firstHandDecision + " is stronger than the second hand's " + secondHandDecision, 'success')
@@ -73,7 +73,6 @@ function validateHand (hand) {
       for (var i = 0; i < pairOfCards.length; i++) {
         // Checks if any duplicates are present within the code.
         if (countApperances(hand, pairOfCards[i]) > 1) {
-          duplicatesPresent = true
           sweetAlert('Oops...', 'Please remove any duplicate cards', 'warning')
           return false
         }
@@ -138,6 +137,7 @@ function countApperances (string, string2) {
 function winningHandResult (firstHandDecision, secondHandDecision, result) {
   var firstHandAsInt = handToInteger(firstHandDecision)
   var secondHandAsInt = handToInteger(secondHandDecision)
+  // alert("first hand as int " + firstHandDecision + " " + secondHandDecision + " " + firstHandAsInt + " " + secondHandAsInt)
   if (firstHandAsInt > secondHandAsInt) {
     result = 1
   } else if (firstHandAsInt < secondHandAsInt) {
@@ -150,7 +150,7 @@ function winningHandResult (firstHandDecision, secondHandDecision, result) {
 
 // Determines which hand with a high card is the winner.
 function highCardResult (result) {
-  alert('high card values is ' + highCardValue[0] + ' ' + highCardValue[1])
+  // alert('high card values is ' + highCardValue[0] + ' ' + highCardValue[1])
   var firstHandAsInt = denomToInteger(highCardValue[0])
   var secondHandAsInt = denomToInteger(highCardValue[1])
   if (firstHandAsInt > secondHandAsInt) {
@@ -166,7 +166,7 @@ function highCardResult (result) {
   return result
 }
 
-function WinAndSplit (hand) {
+function getHandDecision (hand) {
   // Splits cards into pairs in the form of 2 characters. 
   var pairOfCards = hand.split(' ')
   var cardsObject = getCardObject()
@@ -339,7 +339,7 @@ function determineHand (cardsObject) {
       // alert('The result is a Flush with ' + suitFlush[0].name)
     } else {
       // Returns denominations that have only appeared once, but in reverse order so highest card starts first.
-      if (denomEquals1.length != 0 && !inSameSuit && !threeOfAKind && !twoPairs && !pair) {
+      if (denomEquals1.length != 0 && !inSameSuit && fourOfAKind.length == 0 && !threeOfAKind && !twoPairs && !pair) {
         // Needs a bit more work
         var reverseDenom = denomEquals1.reverse()
         // Take the first result which is the highest denomination
